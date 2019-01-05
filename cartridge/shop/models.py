@@ -172,8 +172,7 @@ class ProductImage(Orderable):
     file = FileField(_("Image"), max_length=255, format="Image",
         upload_to=upload_to("shop.ProductImage.file", "product"))
     description = CharField(_("Description"), blank=True, max_length=100)
-    product = models.ForeignKey("Product", related_name="images")
-
+    product = models.ForeignKey("Product",on_delete=models.DO_NOTHING, related_name="images")
     class Meta:
         verbose_name = _("Image")
         verbose_name_plural = _("Images")
@@ -229,7 +228,7 @@ class ProductVariation(with_metaclass(ProductVariationMetaclass, Priced)):
     ``SHOP_OPTION_TYPE_CHOICES`` for a ``Product`` instance.
     """
 
-    product = models.ForeignKey("Product", related_name="variations")
+    product = models.ForeignKey("Product",on_delete=models.DO_NOTHING, related_name="variations")
     default = models.BooleanField(_("Default"), default=False)
     image = models.ForeignKey("ProductImage", verbose_name=_("Image"),
                               null=True, blank=True, on_delete=models.SET_NULL)
@@ -352,7 +351,7 @@ class Category(Page, RichText):
     options = models.ManyToManyField("ProductOption", blank=True,
                                      verbose_name=_("Product options"),
                                      related_name="product_options")
-    sale = models.ForeignKey("Sale", verbose_name=_("Sale"),
+    sale = models.ForeignKey("Sale",on_delete=models.DO_NOTHING,  verbose_name=_("Sale"),
                              blank=True, null=True)
     price_min = fields.MoneyField(_("Minimum price"), blank=True, null=True)
     price_max = fields.MoneyField(_("Maximum price"), blank=True, null=True)
@@ -675,7 +674,7 @@ class SelectedProduct(models.Model):
 
 class CartItem(SelectedProduct):
 
-    cart = models.ForeignKey("Cart", related_name="items")
+    cart = models.ForeignKey("Cart",on_delete=models.DO_NOTHING,  related_name="items")
     url = CharField(max_length=2000)
     image = CharField(max_length=200, null=True)
 
@@ -694,7 +693,7 @@ class OrderItem(SelectedProduct):
     """
     A selected product in a completed order.
     """
-    order = models.ForeignKey("Order", related_name="items")
+    order = models.ForeignKey("Order", on_delete=models.DO_NOTHING, related_name="items")
 
 
 class ProductAction(models.Model):
@@ -705,7 +704,7 @@ class ProductAction(models.Model):
     popularity and sales reporting.
     """
 
-    product = models.ForeignKey("Product", related_name="actions")
+    product = models.ForeignKey("Product",on_delete=models.DO_NOTHING,  related_name="actions")
     timestamp = models.IntegerField()
     total_cart = models.IntegerField(default=0)
     total_purchase = models.IntegerField(default=0)
